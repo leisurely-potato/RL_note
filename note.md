@@ -101,4 +101,51 @@ $E_s[V_\pi(S) ]$也可以**评价当前 $policy \pi$ 的好坏**，因为是对�
     Q: Can I update the model before the end of the episode?
     A: 前半段实际值，后半段预测值，加起来作为一个值去与模型的整体估计值作比较
 
-6.  
+6.  apply TD to DQN
+   因为
+   $$
+    G_t=R_t+\gamma G_{t+1}
+   $$
+   所以
+   $$
+    y_t=Q(s_t,a_t;w) ≈ r_t + \gamma Q(s_{t+1},a_{t+1};w) \\
+    = r_t + \gamma max_{a'}Q(s_{t+1},a';w)(a_{t+1}的选择原理) \\
+    Loss: L_t=\frac{1}{2}(y_t-Q(s_t,a_t;w))^2
+   $$
+   所以
+   $$
+   E[G_t](Prediction) ≈ E[r_t(Reality) + \gamma E[G_{t+1}](Prediction)]（TD\ target）
+   $$
+7.  Policy Network $\pi (a|s,\theta)$
+   ![alt text](image-3.png)
+    近似状态价值函数
+    $$
+    V(s_t,\theta)=\Sigma_a\pi(a|s_t,\theta)Q_\pi(s_t,a)
+    $$
+    问题1：如何学习参数$\theta$？
+    答：学习$\theta$，使得$J(\theta)=E_s[V(S;\theta)]$最大化 <br>
+    **策略梯度算法**(随机梯度，随机性来源于s)
+        1. 观察当前状态s
+        2. 更新参数$\theta \leftarrow \theta+\beta · \frac{\partial V(s;\theta)}{\partial \theta}$ <br>
+    问题2：如何求$\frac{\partial V(s;\theta)}{\partial \theta}$？(此处并不严谨)
+    答：$$
+    \begin{array}{l}
+        \frac{\partial V(s;\theta)}{\partial \theta}
+    =\Sigma_a\frac{\partial \pi(a|s;\theta)}{\partial \theta}Q_\pi(s,a) (离散形式)\\
+    =\Sigma_a\pi(a|s;\theta)\frac{\partial log\pi(a|s;\theta)}{\partial \theta}Q_\pi(s,a)(chain\ rule: \frac{\partial log[\pi (\theta)]}{\partial \theta}=\frac{1}{\pi(\theta)}\frac{\partial \pi(\theta)}{\partial \theta})\\
+    =E_a[\frac{\partial log\pi(a|s;\theta)}{\partial \theta}Q_\pi(s,a)]（连续形式）
+    \end{array}
+    $$
+    问题3： 如何在连续的情况下求得$E_a[\frac{\partial log\pi(a|s;\theta)}{\partial \theta}Q_\pi(s,a)]$?
+    答：**蒙特卡洛近似**，用采样的方法来估计期望
+        1. 采样动作$\hat{a}$，根据$\pi(\hat{a}|s;\theta)$
+        2. 计算$g(\hat{a},\theta)=\frac{\partial log\pi(\hat{a}|s;\theta)}{\partial \theta}Q_\pi(s,\hat{a})$
+        3. 可以证明$g(\hat{a},\theta)$为$\frac{\partial V(s,\theta)}{\partial \theta} $的无偏估计
+    ![alt text](image-4.png)
+    问题4： 如何近似计算$q_t$
+    答：两种方法：
+        1. REINFORCE
+          ![alt text](image-5.png)
+        2. Actor-Critic
+          用神经网络近似价值函数$Q_\pi$
+8.  
