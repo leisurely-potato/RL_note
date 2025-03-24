@@ -4,15 +4,18 @@
    2. 下一时间的**环境状态**根据当前的环境状态和动作而随机生成
 2. 三元组（s1,a1,r1………st,at,rt）(state，action，reward)
 3. **折扣汇报**，未来的奖励没现在的奖励值钱
-$$
-G_t=R_t+\gamma R_{t+1}+ \dots
-$$
-为什么回报与未来的奖励有关，与过去的奖励无关？
-过去的因为是已经改变不了的了，不是个变量了，而强化学习做的是在当前状态下该采取什么动作，做了当前的动作是为了未来更好才去做的
-4. **动作价值函数（Action-value function）**$Q_\pi(s_t,a_t)=E[G_t|S_t=s_t,A_t=a_t]$，因为没办法直接求$G_t$，所以只能通过概率去求其期望，转化为状态价值函数（与policy $\pi$有关 ）,这个函数是**用来评价当前的动作好不好**，这里的期望是根据未来的所有可能的状态$A_{t+1},A_{t+2}...$和动作($S_{t+1},S_{t+2},...$)求的
 
-5. **optimal Action-value function**:$Q^*(s_t,a_t)=\underset{\pi}{max}Q_\pi(s_t,a_t)$，作用为评价当前的动作,找一个最好的policy $\pi$，使得当前的动作最好
-6. **State-value function**:$V_\pi(s_t)=E_A[Q_\pi(s_t,A)]$，可以判断**当前局势好不好**，因为是对所有动作求期望，所以是对当前局势的评价 
+$$
+G_t = R_t + \gamma R_{t+1} + \dots
+$$
+
+为什么回报与未来的奖励有关，与过去的奖励无关？
+
+过去的因为是已经改变不了的了，不是个变量了，而强化学习做的是在当前状态下该采取什么动作，做了当前的动作是为了未来更好才去做的。
+1. **动作价值函数（Action-value function）**$Q_\pi(s_t,a_t)=E[G_t|S_t=s_t,A_t=a_t]$，因为没办法直接求$G_t$，所以只能通过概率去求其期望，转化为状态价值函数（与policy $\pi$有关 ）,这个函数是**用来评价当前的动作好不好**，这里的期望是根据未来的所有可能的状态$A_{t+1},A_{t+2}...$和动作($S_{t+1},S_{t+2},...$)求的
+
+2. **optimal Action-value function**:$Q^*(s_t,a_t)=\underset{\pi}{max}Q_\pi(s_t,a_t)$，作用为评价当前的动作,找一个最好的policy $\pi$，使得当前的动作最好
+3. **State-value function**:$V_\pi(s_t)=E_A[Q_\pi(s_t,A)]$，可以判断**当前局势好不好**，因为是对所有动作求期望，所以是对当前局势的评价 
 $$
 V_\pi(s_t)=E_A[Q_\pi(s_t,A)]=\begin{cases}
     \Sigma_a[Q_\pi(s_t,a)\pi(a|s_t)] & \text{if } discrete\\
@@ -138,14 +141,14 @@ $E_s[V_\pi(S) ]$也可以**评价当前 $policy \pi$ 的好坏**，因为是对�
     $$
     问题3： 如何在连续的情况下求得$E_a[\frac{\partial log\pi(a|s;\theta)}{\partial \theta}Q_\pi(s,a)]$?
     答：**蒙特卡洛近似**，用采样的方法来估计期望
-        1. 采样动作$\hat{a}$，根据$\pi(\hat{a}|s;\theta)$
-        2. 计算$g(\hat{a},\theta)=\frac{\partial log\pi(\hat{a}|s;\theta)}{\partial \theta}Q_\pi(s,\hat{a})$
-        3. 可以证明$g(\hat{a},\theta)$为$\frac{\partial V(s,\theta)}{\partial \theta} $的无偏估计
+        3. 采样动作$\hat{a}$，根据$\pi(\hat{a}|s;\theta)$
+        4. 计算$g(\hat{a},\theta)=\frac{\partial log\pi(\hat{a}|s;\theta)}{\partial \theta}Q_\pi(s,\hat{a})$
+        5. 可以证明$g(\hat{a},\theta)$为$\frac{\partial V(s,\theta)}{\partial \theta} $的无偏估计
     ![alt text](image-4.png)
     问题4： 如何近似计算$q_t$
     答：两种方法：
-        1. REINFORCE
+        6. REINFORCE
           ![alt text](image-5.png)
-        2. Actor-Critic
+        7. Actor-Critic
           用神经网络近似价值函数$Q_\pi$
 8.  
