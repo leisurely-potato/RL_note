@@ -113,6 +113,8 @@ $$
     答：$a^*=\underset{a}{argmax}Q^*(s,a)$ <br>
     挑战： $Q^*(s,a)$ 是未知的，只能通过已知的数据来近似
     答：用神经网络 $Q(s,a;w)$ 来近似 $Q^*(s,a)$（DNQ）<br>
+    问题：DQN的硬伤？
+    答：
     训练过程：
     ![alt text](image-1.png)
      
@@ -153,7 +155,7 @@ $$
 
     问题1：如何学习参数 $\theta$ ？
     答：学习 $\theta$ ，使得 $J(\theta)=E_s[V(S;\theta)]$ 最大化 <br>
-    **策略梯度算法**(随机梯度，随机性来源于s)
+    **策略梯度算法**(随机梯度，随机性来源于s)（和动作无关）
         1. 观察当前状态s
         2. 更新参数 $\theta \leftarrow \theta+\beta · \frac{\partial V(s;\theta)}{\partial \theta}$  <br>
     问题2：如何求 $\frac{\partial V(s;\theta)}{\partial \theta}$ ？(此处并不严谨)
@@ -180,4 +182,28 @@ $$
           ![alt text](image-5.png)
         7. Actor-Critic
           用神经网络近似价值函数 $Q_\pi$
-8.  
+8.  Actor-Critic 方法
+    1.  （Policy Network）Actor：
+        用神经网络近似策略 $\pi(a|s;\theta)$
+        ![alt text](image-6.png)
+    2.  Value Network：Critic
+        用神经网络近似价值函数 $Q(s,a;\omega)$
+        ![alt text](image-7.png)
+    3.  训练网络
+          定义：$V(s;\theta,\omega)=\Sigma_a \pi(a|s;\theta)·q(s,a;\omega) $
+          通过更新策略网络$\pi(a|s;\theta)$来增加状态函数$V(s;\theta,\omega)$的值（**策略网络$\pi(a|s;\theta)$根据q来更新**）
+          **q根据奖励来更新**
+          步骤：
+        1. 采样状态s
+        2. 根据 $\pi(·|s_t;\theta_t)$随机采样动作$a_t$
+        3. 执行动作 $a_t$，采样奖励 $r_t$ 和下一个状态$s_{t+1}$
+        4. 用TD更新q网络和参数 $\omega$
+           计算$q(s_t,a_t;\omega)$和 $q(s_{t+1},a_{t+1};\omega)$
+            TD target: $y_t=r_t +\gamma \cdot q(s_{t+1},a_{t+1};\omega_t)$
+            Loss: $L(\omega)=\frac{1}{2}(y_t-q(s_t,a_t;\omega))^2$
+            梯度下降：$\omega_{t+1}=\omega_t-\alpha \cdot \nabla_{\omega}L(\omega)$
+        5. 用policy gradien更新V网络和参数$\theta$
+        ![alt text](image-8.png)
+        7. 
+    4.  
+9.  
